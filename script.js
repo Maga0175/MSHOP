@@ -1,6 +1,45 @@
 const root = document.getElementById("page");
 const cartBtn = document.getElementById("cartBtn");
-let products = [];
+
+// Массив товаров ХАРДКОД! (вместо fetch)
+let products = [
+    {
+        id: 1,
+        name: "Брелок",
+        description: "Аксессуар для ключей, стильный.",
+        price: 150,
+        photo: "img/keychain.jpg"
+    },
+    {
+        id: 2,
+        name: "Кружка",
+        description: "Керамика, золотой обод.",
+        price: 450,
+        photo: "img/mug.jpg"
+    },
+    {
+        id: 3,
+        name: "Крем",
+        description: "Натуральная косметика.",
+        price: 650,
+        photo: "img/cream.jpg"
+    },
+    {
+        id: 4,
+        name: "Зарядка",
+        description: "Элегантная электроника.",
+        price: 1200,
+        photo: "img/powerbank.jpg"
+    },
+    {
+        id: 5,
+        name: "Кекс",
+        description: "Домашняя выпечка.",
+        price: 220,
+        photo: "img/cake.jpg"
+    }
+];
+
 let cart = [];
 
 let user_id;
@@ -165,15 +204,10 @@ function showOrderForm() {
             payment: paySel.value,
             items: JSON.stringify(cart.map(x => ({name:x.name, count:x.count, price:x.price}))),
         };
-        let resp = await fetch("/order", {
-            method: "POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify(orderData),
-        });
-        let data = await resp.json();
+        // fetch("/order", {...}) — на GitHub Pages НЕ РАБОТАЕТ
         cart = [];
         updateCartBtn();
-        showConfirm(data.order_id);
+        showConfirm(1);
     };
 
     box.append(makeLabel("Имя"), name, makeLabel("Телефон"), phone, makeLabel("Адрес"), addr, payLabel, paySel, btnConfirm);
@@ -203,9 +237,8 @@ function updateCartBtn() {
 // Старт и навигация
 cartBtn.onclick = showCart;
 
-window.onload = async function() {
-    const resp = await fetch("/products");
-    products = await resp.json();
+// window.onload для статичных товаров
+window.onload = function() {
     showCatalog();
     updateCartBtn();
     cartBtn.classList.remove("active");
